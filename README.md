@@ -193,6 +193,22 @@ Each check creates an isolated temporary data directory, starts the real HTTP
 handler, sends generated WAV inputs, and verifies read-back or rendered output.
 The checks are bounded and do not require network access.
 
+## Audio change review
+
+The repository also carries a maintenance procedure for deciding whether an
+audio-processing change may be released, accepted as compatible, or must block
+release. It is additive: it does not change the production algorithm.
+
+- Procedure and rule table: `docs/AUDIO_CHANGE_REVIEW.md`
+- Implementation: `internal/audit`
+- Rehearsal: `go run ./cmd/audioaudit -out ./var/audio-audit`
+- Focused tests: `go test ./internal/audit/`
+
+The rehearsal records the historical delivered bytes as a byte-level promise,
+submits one changed delivery per record, and requires the rule set to identify
+the intended cause. It also proves that an older conclusion is preserved after
+a later delivery is appended.
+
 ## Deferred test boundary
 
 This baseline contains no unit tests, test fixtures, browser checks, or
